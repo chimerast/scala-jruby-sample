@@ -1,10 +1,8 @@
 package org.karatachi.scala
 
-import java.io._
-
 import scala.collection.JavaConversions._
-
-import org.jruby.javasupport._
+import java.io._
+import org.jruby.embed._
 
 object Bootstrap {
   val script = """
@@ -20,14 +18,8 @@ Test.new
   """
 
   def main(args: Array[String]) {
-    val scene = JRuby.eval(script).asInstanceOf[Runnable]
+    val container = new ScriptingContainer
+    val scene = container.runScriptlet(script).asInstanceOf[Runnable]
     scene.run
   }
-}
-
-object JRuby {
-  val ruby = JavaEmbedUtils.initialize(List())
-  val evaluator = JavaEmbedUtils.newRuntimeAdapter
-
-  def eval(script: String) = evaluator.eval(ruby, script)
 }
